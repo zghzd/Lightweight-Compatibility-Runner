@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7807690a-e77e-4397-a4dc-3383c3236f06}</ProjectGuid>
-    <RootNamespace>Launcher</RootNamespace>
+    <ProjectGuid>{d8ce4465-9f20-43e7-831e-b3ae11598d12}</ProjectGuid>
+    <RootNamespace>lcr</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Launcher.cpp" />
+    <ClCompile Include="lcr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />

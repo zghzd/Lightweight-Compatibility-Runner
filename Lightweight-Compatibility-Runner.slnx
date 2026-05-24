@@ -1,6 +1,7 @@
 <Solution>
   <Configurations>
     <Platform Name="x64" />
+    <Platform Name="x86" />
   </Configurations>
-  <Project Path="Launcher/Launcher.vcxproj" Id="7807690a-e77e-4397-a4dc-3383c3236f06" />
+  <Project Path="lcr/lcr.vcxproj" Id="d8ce4465-9f20-43e7-831e-b3ae11598d12" />
 </Solution>
