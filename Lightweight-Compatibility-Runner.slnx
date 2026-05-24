@@ -3,5 +3,8 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="lcr/lcr.vcxproj" Id="d8ce4465-9f20-43e7-831e-b3ae11598d12" />
+  <Project Path="lcr-android/lcr-android.vcxproj" Id="d74544eb-a95d-444e-a5e0-48ce82331023" />
+  <Project Path="lcr/lcr.vcxproj" Id="d8ce4465-9f20-43e7-831e-b3ae11598d12">
+    <BuildDependency Project="lcr-android/lcr-android.vcxproj" />
+  </Project>
 </Solution>
