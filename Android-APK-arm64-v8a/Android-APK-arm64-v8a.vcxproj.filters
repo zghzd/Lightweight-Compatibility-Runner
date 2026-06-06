@@ -15,16 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="android_APK.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="unzip-APK.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="is_subdirectory.h">
@@ -33,24 +24,39 @@
     <ClInclude Include="normalize_path.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="unzip-APK.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\miniz-3.1.1\miniz.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="getAPKpackagename.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lcr-android.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="android_APK.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="unzip-APK.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="is_subdirectory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="normalize_path.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="unzip-APK.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\miniz-3.1.1\miniz.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="getAPKpackagename.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

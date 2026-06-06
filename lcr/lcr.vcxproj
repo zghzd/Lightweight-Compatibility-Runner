@@ -132,11 +132,10 @@
   <ItemGroup>
     <None Include="..\DEPENDENCIES.md" />
     <None Include="..\README.md" />
-    <None Include="newPlatformSupportADD.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DLL export template.h" />
     <ClInclude Include="lcr.h" />
-    <ClInclude Include="platform-Android.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,18 +1,9 @@
 #include "pch.h"
-extern "C" {
-#include "../miniz-3.1.1/miniz.h"
-}
+
 #include <iostream>
 #include <string>
 #include <filesystem>
-/**
-@param apkPath   APK/ZIP 文件路径
-@param destDir   解压输出根目录（会自动创建）
-@param pattern   匹配模式：
-- 以 '/' 结尾：解压该目录下所有文件
-- 否则：解压单个文件
- @return  成功返回 true，失败返回 false
- */
+
 bool ExtractFromApk(const char* apkPath, const char* destDir, const char* pattern) {
     if (!apkPath || !destDir || !pattern) {
         std::cerr << "Invalid parameters." << std::endl;
@@ -58,7 +49,11 @@ bool ExtractFromApk(const char* apkPath, const char* destDir, const char* patter
 
         if (match) {
             anyMatched = true;
-            std::string outPath = std::string(destDir) + "/" + entryName;
+            std::string outName = entryName;
+            if (isDirPattern) {
+                outName = std::filesystem::path(entryName).filename().string();
+            }
+            std::string outPath = std::string(destDir) + "/" + outName;
 
             std::filesystem::path outFilePath(outPath);
             std::filesystem::create_directories(outFilePath.parent_path(), ec);

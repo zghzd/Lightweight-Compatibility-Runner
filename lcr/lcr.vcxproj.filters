@@ -23,18 +23,15 @@
     <None Include="..\README.md">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="newPlatformSupportADD.md">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="..\DEPENDENCIES.md">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="platform-Android.h">
+    <ClInclude Include="lcr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="lcr.h">
+    <ClInclude Include="DLL export template.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

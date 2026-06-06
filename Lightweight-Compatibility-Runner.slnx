@@ -1,10 +1,7 @@
 <Solution>
   <Configurations>
     <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
-  <Project Path="lcr-android/lcr-android.vcxproj" Id="d74544eb-a95d-444e-a5e0-48ce82331023" />
-  <Project Path="lcr/lcr.vcxproj" Id="d8ce4465-9f20-43e7-831e-b3ae11598d12">
-    <BuildDependency Project="lcr-android/lcr-android.vcxproj" />
-  </Project>
+  <Project Path="Android-APK-arm64-v8a/Android-APK-arm64-v8a.vcxproj" Id="83ca4a31-1221-4e22-aea4-05b5ed43577c" />
+  <Project Path="lcr/lcr.vcxproj" Id="d8ce4465-9f20-43e7-831e-b3ae11598d12" />
 </Solution>
