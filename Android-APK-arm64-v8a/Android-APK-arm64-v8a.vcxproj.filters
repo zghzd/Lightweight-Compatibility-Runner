@@ -33,9 +33,6 @@
     <ClInclude Include="..\miniz-3.1.1\miniz.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="getAPKpackagename.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -54,9 +51,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\miniz-3.1.1\miniz.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="getAPKpackagename.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

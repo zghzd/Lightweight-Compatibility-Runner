@@ -141,7 +141,6 @@
   <ItemGroup>
     <ClInclude Include="..\miniz-3.1.1\miniz.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="getAPKpackagename.h" />
     <ClInclude Include="is_subdirectory.h" />
     <ClInclude Include="normalize_path.h" />
     <ClInclude Include="pch.h" />
@@ -152,7 +151,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="getAPKpackagename.cpp" />
     <ClCompile Include="is_subdirectory.cpp" />
     <ClCompile Include="normalize_path.cpp" />
     <ClCompile Include="pch.cpp">
