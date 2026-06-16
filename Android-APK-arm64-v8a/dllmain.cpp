@@ -2,6 +2,10 @@
 #include <chrono>
 #include <sstream>
 #include "unzip-APK.h"
+#include "lcr_s_APK_androidmanifest.h"
+#include "isFileContentEmpty.h"
+#include "ConfigReader.h"
+#include "getCanonicalPath.h"
 
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,
@@ -28,7 +32,28 @@ static bool isDirectoryNonEmpty(const std::string& path) {
     return false;
 }
 
-// Usage: lcr <dll> <packagename> [<APK-file>] [-d]
+static void prepareAPK(const std::string& apkPath, const std::string& libDir, const std::string& dexDir) {
+    if (!isDirectoryNonEmpty(libDir)) {
+        ExtractFromApk(apkPath.c_str(), libDir.c_str(), "lib/arm64-v8a/");
+    }
+    else {
+        std::cout << "Will use cache.\n";
+    }
+
+    if (!isDirectoryNonEmpty(dexDir)) {
+        for (int i = 1; ; ++i) {
+            std::ostringstream name;
+            if (i == 1) name << "classes.dex";
+            else name << "classes" << i << ".dex";
+            if (!ExtractFromApk(apkPath.c_str(), dexDir.c_str(), name.str().c_str()))
+                break;
+        }
+    }
+    else {
+        std::cout << "Will use cache.\n";
+    }
+}
+// Usage: lcr <dll> <packagename> [-d]
 extern "C" __declspec(dllexport) int lcrmain(int argc, const char* argv[]) {
     std::ofstream lcrmain_log("lcrmain.log", std::ios::app);
     if (!lcrmain_log) return 3;
@@ -36,22 +61,25 @@ extern "C" __declspec(dllexport) int lcrmain(int argc, const char* argv[]) {
 
     if (argc < 3) {
         std::cout << "Too few parameters.\n"
-            "argu:\n\t<packagename> [<your-APK-file>] [-d]\n"
+            "argu:\n\t<packagename> [<path>] [-d]\n"
             "The -d switch specifies whether to print debug information." << std::endl;
         return 1;
     }
 
     bool debuggable = false;
     std::string apk_packagename = argv[2];
-    std::string ori_apk_path;
+    if (apk_packagename.find_first_of("\\/:*?\"<>|") != std::string::npos ||
+        apk_packagename.front() == '.' || apk_packagename.back() == '.' ||
+        apk_packagename.find("..") != std::string::npos) {
+        std::cout << "Invalid package name: " << apk_packagename << std::endl;
+        lcrmain_log << "Invalid package name: " << apk_packagename << std::endl;
+        return 1;
+    }
 
     for (int i = 3; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "-d") {
             debuggable = true;
-        }
-        else if (ori_apk_path.empty()) {
-            ori_apk_path = arg;
         }
         else {
             std::cout << "Unexpected argument: " << arg << std::endl;
@@ -84,73 +112,56 @@ extern "C" __declspec(dllexport) int lcrmain(int argc, const char* argv[]) {
     std::string path_dex = path_root + "dex/";
     std::string path_lib = path_root + "lib/arm64-v8a/";
     std::string path_data = path_root + "data/";
-    std::string file_apk = path_root + "base.apk";
-
-    bool cache_valid = false;
-    if (std::filesystem::exists(file_apk) && std::filesystem::is_regular_file(file_apk)) {
-        bool dex_nonempty = isDirectoryNonEmpty(path_dex);
-        bool lib_nonempty = isDirectoryNonEmpty(path_lib);
-        cache_valid = dex_nonempty || lib_nonempty;
+    std::string file_config = path_root + "Settings.config";
+    std::filesystem::create_directories(path_root);
+    std::filesystem::create_directories(path_data);
+    std::filesystem::create_directories(path_lib);
+    std::filesystem::create_directories(path_dex);
+    if (isFileContentEmpty(file_config)) {
+        std::fstream t_configFile(file_config, std::ios_base::out);
+        t_configFile << "#This is the basic configuration file.\n#It's recommended to use English only.\n"
+            << "file_ori_apk=\n#file_ori_apk: the path of the original APK.\n"
+            << "path_apk_dec=\n#path_apk_dec: the path to the output files after decompiling.\n";
+        std::cout << "The configuration file is located at " << getCanonicalPath(file_config) << std::endl;
+        std::cout << "Basic setup complete, restart to continue.\n";
+        lcrmain_log << "Basic setup complete, restart to continue.\n";
+        return 101;
     }
-
-    if (cache_valid) {
-        std::cout << "Cache valid for " << apk_packagename << ", skipping preparation." << std::endl;
-        lcrmain_log << "Cache valid, skipping PREP APK.\n";
-        goto prep_done;
-    }
-
-    if (ori_apk_path.empty()) {
-        std::cout << "No valid cache and no APK file provided. Please provide APK file.\n";
-        lcrmain_log << "No cache and no APK file.\n";
+    ConfigReader config_Settings;
+    if (!config_Settings.load(file_config)) {
+        std::cerr << "Failed to load config file." << std::endl;
         return 1;
     }
-
-    try {
-        std::filesystem::create_directories(path_dex);
-        std::filesystem::create_directories(path_lib);
-        std::filesystem::create_directories(path_data);
-    }
-    catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Failed to create directory: " << e.what() << '\n';
-        lcrmain_log << "Failed to create directory: " << e.what() << '\n';
-        return 1;
-    }
-
-    if (std::filesystem::exists(file_apk)) {
-        if (std::filesystem::is_regular_file(file_apk)) {
-            lcrmain_log << "Already exists: " << file_apk << ", Will use cached content.\n";
-        }
-        else {
-            lcrmain_log << "Error: " << file_apk << ", Exists but is not a valid file.\n";
-            std::cout << "Error: " << file_apk << ", Exists but is not a valid file.\n";
-            return 1;
-        }
-    }
-    else {
-        std::filesystem::copy(ori_apk_path, file_apk, std::filesystem::copy_options::overwrite_existing);
-        ExtractFromApk(file_apk.c_str(), path_lib.c_str(), "lib/arm64-v8a/");
-        for (int i = 1; ; ++i) {
-            std::ostringstream name;
-            if (i == 1)
-                name << "classes.dex";
-            else
-                name << "classes" << i << ".dex";
-            if (!ExtractFromApk(file_apk.c_str(), path_dex.c_str(), name.str().c_str()))
-                break;
-        }
-    }
-
-prep_done:
-    // PREP APK ,finished
-    lcrmain_log << "PREP APK ,done.Infor: {"
+    std::string file_ori_apk, path_apk_dec, file_AndroidManifest;
+    file_ori_apk = config_Settings.get("file_ori_apk");
+    path_apk_dec = config_Settings.get("path_apk_dec");
+    file_AndroidManifest = path_apk_dec + "AndroidManifest.xml";
+    lcrmain_log << "Infor: {"
         << "path_workpath: " << path_workpath << ","
         << "path_root: " << path_root << ","
         << "path_tmp: " << path_tmp << ","
-        << "file_apk: " << file_apk << ","
         << "path_dex: " << path_dex << ","
         << "path_lib: " << path_lib << ","
         << "path_data: " << path_data << ","
+        << "apk_packagename: " << apk_packagename << ","
+        << "path_apk_dec: " << path_apk_dec << ","
+        << "file_ori_apk: " << file_ori_apk << ","
+        << "file_AndroidManifest: " << file_AndroidManifest << ","
         << "}\n";
-    
+    if (path_apk_dec == "" ||
+        file_ori_apk == "" ||
+        !std::filesystem::exists(path_apk_dec) ||
+        !std::filesystem::exists(file_ori_apk)||
+        !std::filesystem::exists(file_AndroidManifest)
+        ) {
+        std::cout << "Configuration error.\n";
+        lcrmain_log << "Configuration error.\n";
+        return 1;
+    }
+    prepareAPK(file_ori_apk, path_lib, path_dex);
+
+    //next: AndroidManifest.xml文本解析，资源预映射，dex/lib执行，无头准备，数据欺骗
+
+
     return 0;
 }

@@ -140,8 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\miniz-3.1.1\miniz.h" />
+    <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="getCanonicalPath.h" />
+    <ClInclude Include="isFileContentEmpty.h" />
     <ClInclude Include="is_subdirectory.h" />
+    <ClInclude Include="lcr_s_APK_androidmanifest.h" />
     <ClInclude Include="normalize_path.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="unzip-APK.h" />
@@ -160,6 +164,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="unzip-APK.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README_Android-APK-arm64-v8a.md">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
